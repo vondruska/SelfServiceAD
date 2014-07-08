@@ -28,9 +28,6 @@ namespace SelfServiceAD.Controllers
                 var native = (ActiveDs.IADsUser)entry.NativeObject;
                 DateTime? passwordExpiration = native.PasswordExpirationDate;
 
-                if (passwordExpiration >= new DateTime(1970, 1, 1))
-                    passwordExpiration = null;
-
                 return
                     View(
                         new UserViewModel
