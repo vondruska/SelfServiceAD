@@ -1,0 +1,31 @@
+﻿@model SelfServiceAD.Models.UserViewModel
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<h2>@Model.DisplayName</h2>
+<h3>@Model.EmailAddress</h3>
+
+<p>Password last set on: 
+    @if (Model.LastPasswordSet.HasValue)
+    {
+        @Model.LastPasswordSet
+    }
+    else
+    {
+        @:never
+    }
+</p>
+<p>
+    Pasword expires on:
+    @if (Model.PasswordExpiration.HasValue)
+    {
+        @Model.PasswordExpiration
+    }
+    else
+    {
+        @:never
+}
+</p>
+
+@Html.ActionLink("Change Password Now", "ChangePassword", null, new { @class = "btn btn-primary" })
