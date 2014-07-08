@@ -28,6 +28,8 @@ namespace SelfServiceAD.Controllers
                 var native = (ActiveDs.IADsUser)entry.NativeObject;
                 DateTime? passwordExpiration = native.PasswordExpirationDate;
 
+                if (passwordExpiration.Value <= new DateTime(1980, 1, 1)) passwordExpiration = null;
+
                 return
                     View(
                         new UserViewModel
@@ -35,14 +37,15 @@ namespace SelfServiceAD.Controllers
                             PasswordExpiration = passwordExpiration,
                             DisplayName = user.DisplayName,
                             EmailAddress = user.EmailAddress,
-                            LastPasswordSet = user.LastPasswordSet
+                            LastPasswordSet = user.LastPasswordSet,
+                            PasswordNeverExpires = user.PasswordNeverExpires
                         });
             }
         }
 
         public ActionResult ChangePassword()
         {
-            return View(new ChangePasswordViewModel { Username = (string)Session["Username"] });
+            return View(new ChangePasswordViewModel());
         }
 
         [HttpPost, ValidateAntiForgeryToken]
@@ -50,7 +53,7 @@ namespace SelfServiceAD.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View();
+                return View(new ChangePasswordViewModel());
             }
 
             var ad = new ActiveDirectory((string)Session["Username"]);
@@ -66,7 +69,7 @@ namespace SelfServiceAD.Controllers
                 ModelState.AddModelError("PasswordFailed", "Changing of your password failed. Please ensure the new password meets complexity requirements, hasn't been used previously, or if the old password does not match.");
             }
 
-            return View();
+            return View(new ChangePasswordViewModel());
         }
     }
 }

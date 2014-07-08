@@ -17,15 +17,14 @@
     }
 </p>
 <p>
-    Pasword expires on:
-    @if (Model.PasswordExpiration.HasValue)
+    @if (Model.PasswordNeverExpires || !Model.PasswordExpiration.HasValue)
     {
-        @Model.PasswordExpiration
+        @:Your password never expires.
     }
     else
     {
-        @:never
-}
+        @:Pasword expires on: @Model.PasswordExpiration
+    }
 </p>
 
 @Html.ActionLink("Change Password Now", "ChangePassword", null, new { @class = "btn btn-primary" })

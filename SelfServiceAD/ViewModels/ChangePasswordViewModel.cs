@@ -6,9 +6,14 @@ using System.Web;
 namespace SelfServiceAD.ViewModels
 {
     using System.ComponentModel.DataAnnotations;
+    using System.Web.ModelBinding;
 
     public class ChangePasswordViewModel
     {
+        public ChangePasswordViewModel()
+        {
+            Username = (string)HttpContext.Current.Session["Username"];
+        }
         public string Username { get; set; }
 
         [Required]
@@ -18,7 +23,7 @@ namespace SelfServiceAD.ViewModels
         public string NewPassword { get; set; }
 
         [Required]
-        [Compare("NewPassword", ErrorMessage = "The passwords do not match")]
+        [Compare("NewPassword", ErrorMessage = "The new passwords do not match")]
         public string ConfirmPassword { get; set; }
     }
 }

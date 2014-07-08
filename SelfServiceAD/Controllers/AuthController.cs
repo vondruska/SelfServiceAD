@@ -10,17 +10,17 @@ namespace SelfServiceAD.Controllers
 
     using ViewModels;
 
-    public class LoginController : Controller
+    public class AuthController : Controller
     {
 
         // GET: Login
-        public ActionResult Index()
+        public ActionResult Login()
         {
             return View();
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public ActionResult Index(LoginViewModel model)
+        public ActionResult Login(LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -31,13 +31,24 @@ namespace SelfServiceAD.Controllers
                     || response == WindowsLogonResponse.PasswordChangeRequired) Session["Username"] = model.Username;
 
                 if (response == WindowsLogonResponse.Successful) return RedirectToAction("Index", "Home");
-                if (response == WindowsLogonResponse.PasswordChangeRequired) return RedirectToAction("ChangePassword", "Home");
+                if (response == WindowsLogonResponse.PasswordChangeRequired)
+                {
+                    TempData["Notice"] = "You are required to change your password.";
+                    return RedirectToAction("ChangePassword", "Home");
+                }
 
                 ModelState.AddModelError("Invalid", "Invalid username and/or password");
                 return View();
             }
 
             return View();
+        }
+
+        public ActionResult Logout()
+        {
+            Session["Username"] = null;
+            TempData["Notice"] = "You have been successfully logged out. Close your browser for the best security.";
+            return RedirectToAction("Login");
         }
     }
 }

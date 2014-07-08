@@ -10,20 +10,31 @@
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
-                @Html.ActionLink("Self Service", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                <span class="navbar-brand">Self Service</span>
             </div>
-        </div>
+            @if (Session["Username"] != null)
+            {
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/Auth/Logout">Logout</a></li>
+                </ul>
+            }
+</div>
     </div>
     <div class="container body-content">
         @if (TempData["Success"] != null)
         {
             <div class="alert alert-success">@TempData["Success"]</div>
         }
+        
+        @if (TempData["Notice"] != null)
+        {
+            <div class="alert alert-warning">@TempData["Notice"]</div>
+        }
+        
         @RenderBody()
         <hr />
     </div>
 
-    @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
 </body>
 </html>

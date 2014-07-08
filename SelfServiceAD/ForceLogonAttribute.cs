@@ -15,7 +15,7 @@ namespace SelfServiceAD
             if (filterContext.HttpContext.Session["Username"] == null)
             {
                 filterContext.Result =
-                    new RedirectToRouteResult(new RouteValueDictionary(new { action = "Index", controller = "Login" }));
+                    new RedirectToRouteResult(new RouteValueDictionary(new { action = "Login", controller = "Auth" }));
             }
         }
     }
