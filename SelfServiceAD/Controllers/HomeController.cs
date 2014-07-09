@@ -16,47 +16,49 @@ namespace SelfServiceAD.Controllers
     {
         public ActionResult Index()
         {
-            using (var pc = new PrincipalContext(ContextType.Domain))
-            {
-                var user = UserPrincipal.FindByIdentity(pc, (string)Session["Username"]);
-                if (user == null)
-                    return RedirectToAction("Index", "Login");
+            var ad = new ActiveDirectory((string)Session["Username"]);
 
-                var entry =
-                    (System.DirectoryServices.DirectoryEntry)user.GetUnderlyingObject();
+            var user = ad.GetUserPrincipal();
 
-                var native = (ActiveDs.IADsUser)entry.NativeObject;
-                DateTime? passwordExpiration = native.PasswordExpirationDate;
+            if (user == null) return RedirectToAction("Logout", "Auth");
 
-                if (passwordExpiration.Value <= new DateTime(1980, 1, 1)) passwordExpiration = null;
+            var entry = (System.DirectoryServices.DirectoryEntry)user.GetUnderlyingObject();
 
-                return
-                    View(
-                        new UserViewModel
-                        {
-                            PasswordExpiration = passwordExpiration,
-                            DisplayName = user.DisplayName,
-                            EmailAddress = user.EmailAddress,
-                            LastPasswordSet = user.LastPasswordSet,
-                            PasswordNeverExpires = user.PasswordNeverExpires
-                        });
-            }
+            var native = (ActiveDs.IADsUser)entry.NativeObject;
+
+            return
+                View(
+                    new UserViewModel
+                    {
+                        PasswordExpiration =
+                            native.PasswordExpirationDate <= new DateTime(1980, 1, 1)
+                                ? null
+                                : (DateTime?)native.PasswordExpirationDate,
+                        DisplayName = user.DisplayName,
+                        EmailAddress = user.EmailAddress,
+                        LastPasswordSet = user.LastPasswordSet,
+                        PasswordNeverExpires = user.PasswordNeverExpires
+                    });
         }
 
         public ActionResult ChangePassword()
         {
-            return View(new ChangePasswordViewModel());
+            // let's check to see if the user is allowed to change their password
+            var ad = new ActiveDirectory((string)Session["Username"]);
+            return ad.UserCannotChangePassword() ? View("UnableToChangePassword") : View(new ChangePasswordViewModel());
         }
 
         [HttpPost, ValidateAntiForgeryToken]
         public ActionResult ChangePassword(ChangePasswordViewModel model)
         {
+            // let's check to see if the user is allowed to change their password
+            var ad = new ActiveDirectory((string)Session["Username"]);
+            if (ad.UserCannotChangePassword()) return View("UnableToChangePassword");
+
             if (!ModelState.IsValid)
             {
                 return View(new ChangePasswordViewModel());
             }
-
-            var ad = new ActiveDirectory((string)Session["Username"]);
          
             try
             {

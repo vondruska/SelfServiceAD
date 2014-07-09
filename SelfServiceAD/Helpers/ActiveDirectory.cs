@@ -10,14 +10,18 @@
     {
         private string Username { get; set; }
 
+        /// <summary>
+        /// Instatnates a new ActiveDirectory object
+        /// </summary>
+        /// <param name="userName">Username to take action with</param>
         public ActiveDirectory(string userName)
         {
             Username = userName;
         }
+
         private bool _disposed;
         IntPtr _token;
-
-
+        
         [DllImport("advapi32.dll", SetLastError = true)]
         public static extern bool LogonUser(
             string username,
@@ -31,8 +35,15 @@
         [DllImport("Kernel32")]
         private extern static Boolean CloseHandle(IntPtr handle);
 
+        /// <summary>
+        /// Attempt to logon to the Windows domain the server is apart of
+        /// </summary>
+        /// <param name="password">Password for the user</param>
+        /// <returns></returns>
         public WindowsLogonResponse Logon(string password)
         {
+            // using Pinvoke for this so we can capture the expired password and forced password change
+            // since LDAP and PrinicpialContext.ValidateCredentials() will fail if those conditions exist
             if (LogonUser(
                 Username,
                 "",
@@ -46,8 +57,8 @@
 
             var error = Marshal.GetLastWin32Error();
 
-            // 1907 is ERROR_PASSWORD_MUST_CHANGE
-            // 1330 is ERROR_PASSWORD_EXPIRED
+            // 1907 = ERROR_PASSWORD_MUST_CHANGE
+            // 1330 = ERROR_PASSWORD_EXPIRED
             switch (error)
             {
                 case 1907:
@@ -58,13 +69,39 @@
             return WindowsLogonResponse.Invalid;
         }
 
-        public void ChangePassword(string currentPassword, string newPassword)
+        /// <summary>
+        /// Attempt to change the password of the user
+        /// </summary>
+        /// <param name="oldPassword">The current/old password of the user </param>
+        /// <param name="newPassword">The new password</param>
+        public void ChangePassword(string oldPassword, string newPassword)
         {
             using (var pc = new PrincipalContext(ContextType.Domain))
             {
                 var user = UserPrincipal.FindByIdentity(pc, Username);
                 if(user != null)
-                    user.ChangePassword(currentPassword, newPassword);
+                    user.ChangePassword(oldPassword, newPassword);
+            }
+        }
+
+        /// <summary>
+        /// Determine if the user is allowed to change their password based on rules
+        /// </summary>
+        /// <returns>True if the user cannot change their password, false if the password change is allowed</returns>
+        public bool UserCannotChangePassword()
+        {
+            using (var pc = new PrincipalContext(ContextType.Domain))
+            {
+                var user = UserPrincipal.FindByIdentity(pc, Username);
+                return user == null || user.UserCannotChangePassword;
+            }
+        }
+
+        public UserPrincipal GetUserPrincipal()
+        {
+            using (var pc = new PrincipalContext(ContextType.Domain))
+            {
+                return UserPrincipal.FindByIdentity(pc, Username);
             }
         }
 
