@@ -16,7 +16,7 @@
             @if (WebsiteUser.Username != null)
             {
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="/Auth/Logout">Logout</a></li>
+                    <li>@Html.ActionLink("Logout", "Logout", "Auth")</li>
                 </ul>
             }
 </div>
