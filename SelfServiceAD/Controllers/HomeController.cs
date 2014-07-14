@@ -9,7 +9,7 @@ namespace SelfServiceAD.Controllers
 
     using Models;
 
-    using ViewModels;
+    using Views.Home;
 
     [ForceLogon]
     public class HomeController : Controller
@@ -28,7 +28,7 @@ namespace SelfServiceAD.Controllers
 
             return
                 View(
-                    new UserViewModel
+                    new UserModel
                     {
                         PasswordExpiration =
                             native.PasswordExpirationDate <= new DateTime(1980, 1, 1)
@@ -45,11 +45,11 @@ namespace SelfServiceAD.Controllers
         {
             // let's check to see if the user is allowed to change their password
             var ad = new ActiveDirectory((string)Session["Username"]);
-            return ad.UserCannotChangePassword() ? View("UnableToChangePassword") : View(new ChangePasswordViewModel());
+            return ad.UserCannotChangePassword() ? View("UnableToChangePassword") : View(new ChangePasswordModel());
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public ActionResult ChangePassword(ChangePasswordViewModel model)
+        public ActionResult ChangePassword(ChangePasswordModel model)
         {
             // let's check to see if the user is allowed to change their password
             var ad = new ActiveDirectory((string)Session["Username"]);
@@ -57,7 +57,7 @@ namespace SelfServiceAD.Controllers
 
             if (!ModelState.IsValid)
             {
-                return View(new ChangePasswordViewModel());
+                return View(new ChangePasswordModel());
             }
          
             try
@@ -71,7 +71,7 @@ namespace SelfServiceAD.Controllers
                 ModelState.AddModelError("PasswordFailed", "Changing of your password failed. Please ensure the new password meets complexity requirements, hasn't been used previously, or if the old password does not match.");
             }
 
-            return View(new ChangePasswordViewModel());
+            return View(new ChangePasswordModel());
         }
     }
 }

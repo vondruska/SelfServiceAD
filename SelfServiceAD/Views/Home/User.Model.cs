@@ -5,7 +5,7 @@ using System.Web;
 
 namespace SelfServiceAD.Models
 {
-    public class UserViewModel
+    public class UserModel
     {
         public DateTime? PasswordExpiration { get; set; }
         public string EmailAddress { get; set; }

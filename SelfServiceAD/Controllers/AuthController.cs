@@ -8,7 +8,7 @@ namespace SelfServiceAD.Controllers
 
     using Models;
 
-    using ViewModels;
+    using Views.Auth;
 
     public class AuthController : Controller
     {
@@ -28,7 +28,7 @@ namespace SelfServiceAD.Controllers
                 var response = logon.Logon(model.Password);
 
                 if (response == WindowsLogonResponse.Successful
-                    || response == WindowsLogonResponse.PasswordChangeRequired) Session["Username"] = model.Username;
+                    || response == WindowsLogonResponse.PasswordChangeRequired) WebsiteUser.Login(model.Username);
 
                 if (response == WindowsLogonResponse.Successful) return RedirectToAction("Index", "Home");
                 if (response == WindowsLogonResponse.PasswordChangeRequired)
@@ -46,7 +46,7 @@ namespace SelfServiceAD.Controllers
 
         public ActionResult Logout()
         {
-            Session["Username"] = null;
+            WebsiteUser.Logout();
             TempData["Notice"] = "You have been successfully logged out. Close your browser for the best security.";
             return RedirectToAction("Login");
         }

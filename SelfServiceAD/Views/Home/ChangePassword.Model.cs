@@ -1,29 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace SelfServiceAD.ViewModels
+﻿namespace SelfServiceAD.Views.Home
 {
+    using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
-    using System.Web.ModelBinding;
 
-    public class ChangePasswordViewModel
+    using Helpers;
+
+    public class ChangePasswordModel
     {
-        public ChangePasswordViewModel()
+        public ChangePasswordModel()
         {
-            Username = (string)HttpContext.Current.Session["Username"];
+            Username = WebsiteUser.Username;
         }
+
         public string Username { get; set; }
 
         [Required]
+        [DisplayName("Old Password")]
         public string OldPassword { get; set; }
 
         [Required]
+        [DisplayName("New Password")]
         public string NewPassword { get; set; }
 
         [Required]
         [Compare("NewPassword", ErrorMessage = "The new passwords do not match")]
+        [DisplayName("Confirm Password")]
         public string ConfirmPassword { get; set; }
     }
 }
