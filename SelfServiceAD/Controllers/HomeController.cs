@@ -12,7 +12,7 @@ namespace SelfServiceAD.Controllers
     using Views.Home;
 
     [ForceLogon]
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         public ActionResult Index()
         {

@@ -42,6 +42,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="MvcThrottle">
+      <HintPath>..\packages\MvcThrottle.1.0.4\lib\net45\MvcThrottle.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Entity" />
@@ -116,6 +119,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AuthController.cs" />
     <Compile Include="ForceLogonAttribute.cs" />
@@ -126,6 +130,7 @@
     <Compile Include="Helpers\Message.cs" />
     <Compile Include="Helpers\WebsiteUser.cs" />
     <Compile Include="Models\ActiveDirectoryTypes.cs" />
+    <Compile Include="MvcThrottleCustomFilter.cs" />
     <Compile Include="Views\Home\User.Model.cs">
       <DependentUpon>Index.cshtml</DependentUpon>
     </Compile>
@@ -167,6 +172,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -190,6 +196,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Home\UnableToChangePassword.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\RateLimited.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

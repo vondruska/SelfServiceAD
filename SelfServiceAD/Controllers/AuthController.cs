@@ -2,15 +2,13 @@
 
 namespace SelfServiceAD.Controllers
 {
-    using System.Net.Configuration;
-
     using Helpers;
 
     using Models;
 
     using Views.Auth;
 
-    public class AuthController : Controller
+    public class AuthController : BaseController
     {
 
         // GET: Login
