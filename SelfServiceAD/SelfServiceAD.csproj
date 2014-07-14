@@ -127,7 +127,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\ActiveDirectory.cs" />
-    <Compile Include="Helpers\Message.cs" />
     <Compile Include="Helpers\WebsiteUser.cs" />
     <Compile Include="Models\ActiveDirectoryTypes.cs" />
     <Compile Include="MvcThrottleCustomFilter.cs" />
