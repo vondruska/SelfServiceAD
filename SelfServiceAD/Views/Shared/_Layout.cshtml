@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using SelfServiceAD.Helpers
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -12,7 +13,7 @@
             <div class="navbar-header">
                 <span class="navbar-brand">Self Service</span>
             </div>
-            @if (Session["Username"] != null)
+            @if (WebsiteUser.Username != null)
             {
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="/Auth/Logout">Logout</a></li>

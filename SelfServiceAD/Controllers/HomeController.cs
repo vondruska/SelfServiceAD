@@ -16,7 +16,7 @@ namespace SelfServiceAD.Controllers
     {
         public ActionResult Index()
         {
-            var ad = new ActiveDirectory((string)Session["Username"]);
+            var ad = new ActiveDirectory(WebsiteUser.Username);
 
             var user = ad.GetUserPrincipal();
 
@@ -44,7 +44,7 @@ namespace SelfServiceAD.Controllers
         public ActionResult ChangePassword()
         {
             // let's check to see if the user is allowed to change their password
-            var ad = new ActiveDirectory((string)Session["Username"]);
+            var ad = new ActiveDirectory(WebsiteUser.Username);
             return ad.UserCannotChangePassword() ? View("UnableToChangePassword") : View(new ChangePasswordModel());
         }
 
@@ -52,7 +52,7 @@ namespace SelfServiceAD.Controllers
         public ActionResult ChangePassword(ChangePasswordModel model)
         {
             // let's check to see if the user is allowed to change their password
-            var ad = new ActiveDirectory((string)Session["Username"]);
+            var ad = new ActiveDirectory(WebsiteUser.Username);
             if (ad.UserCannotChangePassword()) return View("UnableToChangePassword");
 
             if (!ModelState.IsValid)
