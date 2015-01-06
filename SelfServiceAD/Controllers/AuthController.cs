@@ -28,14 +28,19 @@ namespace SelfServiceAD.Controllers
                 if (response == WindowsLogonResponse.Successful
                     || response == WindowsLogonResponse.PasswordChangeRequired) WebsiteUser.Login(model.Username);
 
-                if (response == WindowsLogonResponse.Successful) return RedirectToAction("Index", "Home");
+                if (response == WindowsLogonResponse.Successful) 
+                    return RedirectToAction("Index", "Home");
                 if (response == WindowsLogonResponse.PasswordChangeRequired)
                 {
                     TempData["Notice"] = "You are required to change your password.";
                     return RedirectToAction("ChangePassword", "Home");
                 }
 
-                ModelState.AddModelError("Invalid", "Invalid username and/or password");
+                ModelState.AddModelError(
+                    "Invalid",
+                    response == WindowsLogonResponse.LockedOut
+                        ? "Take a chill pill. Stop trying for a while."
+                        : "Invalid username and/or password");
                 return View();
             }
 

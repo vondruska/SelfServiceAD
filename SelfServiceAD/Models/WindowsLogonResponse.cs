@@ -4,6 +4,7 @@
     {
         Successful,
         PasswordChangeRequired,
+        Locked,
         Invalid
     }
 }

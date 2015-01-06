@@ -64,6 +64,8 @@
                 case 1907:
                 case 1330:
                     return WindowsLogonResponse.PasswordChangeRequired;
+                case 1909:
+                    return WindowsLogonResponse.LockedOut;
             }
 
             return WindowsLogonResponse.Invalid;
