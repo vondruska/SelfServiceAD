@@ -9,7 +9,7 @@
 <p>Password last set on: 
     @if (Model.LastPasswordSet.HasValue)
     {
-        @Model.LastPasswordSet
+        @Model.LastPasswordSet.Value.ToLocalTime()
     }
     else
     {
@@ -23,7 +23,7 @@
     }
     else
     {
-        @:Pasword expires on: @Model.PasswordExpiration
+        @:Pasword expires on: @Model.PasswordExpiration.Value.ToLocalTime()
     }
 </p>
 
